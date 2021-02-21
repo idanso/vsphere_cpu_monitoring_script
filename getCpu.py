@@ -1,4 +1,4 @@
-
+from pyVim.commands.commands import help
 from pyVmomi import vim
 from pyVim.connect import SmartConnectNoSSL, Disconnect
 import atexit
@@ -7,6 +7,14 @@ import argparse
 import getpass
 import ssl
 import time
+import string
+
+isPrtg = False
+testing = False
+
+#if isPrtg:
+   # from prtg.sensor.result import CustomSensorResult
+   # from prtg.sensor.units import ValueUnit
 
 def GetArgs():
    """
@@ -20,6 +28,8 @@ def GetArgs():
                        help='Port to connect on')
    parser.add_argument('-u', '--user', required=True, action='store',
                        help='User name to use when connecting to host')
+   parser.add_argument('-v', '--vm', required=True, action='store',
+                       help='header vm to monitor')
    parser.add_argument('-p', '--password', required=False, action='store',
                        help='Password to use when connecting to host')
    args = parser.parse_args()
@@ -28,15 +38,33 @@ def GetArgs():
 
 def main():
 
-    args = GetArgs()
+    testargs = "-s 10.251.0.200 -u administrator@vsphere.local -p Radware10? -v \"Defense Flow\""
+    usertest = testargs.split()
+    print(usertest[0])
+
+    print(usertest)
+    if isPrtg:
+        data = json.loads(sys.argv[1])
+    else:
+        args = GetArgs()
+    #vm header name
+    headerName = args.vm
+
 
     # Connect to the host without SSL signing
     try:
-        si = SmartConnectNoSSL(
-            host=args.host,
-            user=args.user,
-            pwd=args.password,
-            port=int(args.port))
+        if isPrtg:
+            si = SmartConnectNoSSL(
+                host=args.host,
+                user=args.user,
+                pwd=args.password,
+                port=int(args.port))
+        else:
+            si = SmartConnectNoSSL(
+                host=args.host,
+                user=args.user,
+                pwd=args.password,
+                port=int(args.port))
         atexit.register(Disconnect, si)
 
     except IOError as e:
@@ -64,18 +92,14 @@ def main():
                                                             recursive)
     children = containerView.view
 
-
     vms = []
     # Loop through all the VMs
     for child in children:
-        if child.summary.config.name == "Tpot_Honeypot":
+        if child.summary.config.name.startswith(headerName):
             vms.append(child)
 
-
-    for counter in range(1, 30):
-        for vm in vms:
-            print("name:  " + vm.summary.config.name + "\ncpu usage:  " + str(vm.summary.quickStats.overallCpuUsage))
-        time.sleep(5)
+    for vm in vms:
+        print("name:  " + vm.summary.config.name + "\ncpu usage:  " + str(vm.summary.quickStats.overallCpuUsage))
 
 
 
