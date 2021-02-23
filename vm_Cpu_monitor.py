@@ -95,7 +95,7 @@ if __name__ == "__main__":
         vms = []
         # Loop through all the VMs
         for child in children:
-            if child.summary.config.name.startswith(vmHeaderName):
+            if child.summary.config.name.startswith(vmHeaderName + "-("):
                 vms.append(child)
 
         if isPrtg:

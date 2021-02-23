@@ -7,7 +7,6 @@ import getpass
 import ssl
 import string
 import atexit
-import argparse
 import getpass
 import ssl
 
@@ -15,11 +14,11 @@ from pyVim.commands.commands import help
 from pyVmomi import vim
 from pyVim.connect import SmartConnectNoSSL, Disconnect
 
-isPrtg = True
+#isPrtg = True
 
-if isPrtg:
-    from prtg.sensor.result import CustomSensorResult
-    from prtg.sensor.units import ValueUnit
+#if isPrtg:
+ #   from prtg.sensor.result import CustomSensorResult
+  #  from prtg.sensor.units import ValueUnit
 
 def GetArgs():
     """
@@ -41,7 +40,7 @@ def GetArgs():
     return args
 
 if __name__ == "__main__":
-    try:
+   # try:
         data = json.loads(sys.argv[1])
         if isPrtg:
             csr = CustomSensorResult(text="This sensor runs on %s" % data["host"])
@@ -96,41 +95,41 @@ if __name__ == "__main__":
         vms = []
         # Loop through all the VMs
         for child in children:
-            if child.summary.config.name.startswith(vmHeaderName + "-("):
+            if child.summary.config.name.startswith(vmHeaderName):
                 vms.append(child)
 
-        if isPrtg:
+     #   if isPrtg:
             #check if there are any vms with this header name to avoid firs time error
-            if len(vms) != 0:
-                for vm in vms:
-                    csr.add_channel(name="CPU-" + vm.summary.config.name,
-                                    value=round(vm.summary.quickStats.overallCpuUsage/1000, 3),
-                                    unit="GHz",
-                                    is_float=True)
+    #        if len(vms) != 0:
+   #             for vm in vms:
+   #                 csr.add_channel(name="CPU-" + vm.summary.config.name,
+    #                                value=round(vm.summary.quickStats.overallCpuUsage/1000, 3),
+     #                               unit="GHz",
+      #                              is_float=True)
                                     #is_limit_mode=True,
                                     #limit_min_error=10,
                                     #limit_max_error=80,
                                     #limit_error_msg="Percentage too high")
 
-                    csr.add_channel(name="Memory-" + vm.summary.config.name,
-                                    value=vm.summary.quickStats.guestMemoryUsage,
-                                    unit="MB",
-                                    is_float=False)
+       #             csr.add_channel(name="Memory-" + vm.summary.config.name,
+        #                            value=vm.summary.quickStats.guestMemoryUsage,
+         #                           unit="MB",
+          #                          is_float=False)
                                     #is_limit_mode=True,
                                     #limit_min_error=10,
                                     #limit_max_error=80,
                                     #limit_error_msg="Percentage too high")
-            else:
-                csr.add_channel(name="No Vm's",
-                                value=0,
-                                is_float=False)
+           # else:
+            #    csr.add_channel(name="No Vm's",
+             #                   value=0,
+              #                  is_float=False)
 
 
         else:
             print("name:  " + vm.summary.config.name + "\nmemory usage:  " + str(vm.summary.quickStats.guestMemoryUsage) + "\ncpu usage:  " + str(vm.summary.quickStats.overallCpuUsage))
 
-        print(csr.json_result)
-    except Exception as e:
-        csr = CustomSensorResult(text="Python Script execution error")
-        csr.error = "Python Script execution error: %s" % str(e)
-        print(csr.json_result)
+     #   print(csr.json_result)
+   # except Exception as e:
+    #    csr = CustomSensorResult(text="Python Script execution error")
+     #   csr.error = "Python Script execution error: %s" % str(e)
+      #  print(csr.json_result)
