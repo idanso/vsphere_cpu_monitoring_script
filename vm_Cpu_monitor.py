@@ -113,10 +113,11 @@ if __name__ == "__main__":
             else:
                 csr.add_channel(name="No Vm's",
                                 value=0,
+                                unit="GHz",
                                 is_float=False)
 
         else:
-            print("name:  " + vm.summary.config.name + "\ncpu usage:  " + str(vm.summary.quickStats.overallCpuUsage))
+            print("Host: " + vm.summary.guest.guestFullName + "CPU: " + round(vm.summary.quickStats.overallCpuUsage/1000, 3) + " GHz")
 
         print(csr.json_result)
     except Exception as e:

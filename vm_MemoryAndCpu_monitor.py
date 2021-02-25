@@ -112,7 +112,7 @@ if __name__ == "__main__":
                                     #limit_max_error=80,
                                     #limit_error_msg="Percentage too high")
 
-                    csr.add_channel(name="Memory-" + vm.summary.config.name,
+                    csr.add_channel(name="Memory-" + vm.summary.config.name + " , " + vm.summary.guest.hostName,
                                     value=vm.summary.quickStats.guestMemoryUsage,
                                     unit="MB",
                                     is_float=False)

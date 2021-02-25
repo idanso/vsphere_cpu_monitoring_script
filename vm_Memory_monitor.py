@@ -113,6 +113,7 @@ if __name__ == "__main__":
             else:
                 csr.add_channel(name="No Vm's",
                                 value=0,
+                                unit="MB",
                                 is_float=False)
 
 
